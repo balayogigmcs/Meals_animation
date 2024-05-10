@@ -10,7 +10,6 @@ class MealDetailScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     final favoriteMeal = ref.watch(favoriteMealsProvider);
 
     final isFavorite = favoriteMeal.contains(meal);
@@ -20,20 +19,30 @@ class MealDetailScreen extends ConsumerWidget {
         title: Text(meal.title),
         actions: [
           IconButton(
-              onPressed: () {
-                final wasAdded = ref
-                    .read(favoriteMealsProvider.notifier)
-                    .toggleMealFavoritesStatus(meal);
-                ScaffoldMessenger.of(context).clearSnackBars();
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(wasAdded
-                        ? "Added to Favorites"
-                        : " Removed from Favorites"),
-                  ),
-                ); // to access the method from favoriteMealsProvider class
-              },
-              icon: Icon(isFavorite ? Icons.star : Icons.star_border))
+            onPressed: () {
+              final wasAdded = ref
+                  .read(favoriteMealsProvider.notifier)
+                  .toggleMealFavoritesStatus(meal);
+              ScaffoldMessenger.of(context).clearSnackBars();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(wasAdded
+                      ? "Added to Favorites"
+                      : " Removed from Favorites"),
+                ),
+              ); // to access the method from favoriteMealsProvider class
+            },
+            icon: AnimatedSwitcher(
+                duration: const Duration(milliseconds: 300),
+                transitionBuilder: (child, animation) {
+                  return RotationTransition(
+                    turns: animation,
+                    child: child,
+                  );
+                },
+                child: Icon(isFavorite ? Icons.star : Icons.star_border,
+                    key: ValueKey(isFavorite))),
+          )
         ],
       ),
       body: SingleChildScrollView(

@@ -24,7 +24,8 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-        vsync: this,
+        vsync:
+            this, // here it is synched by the mixin(SingleTickerProviderStateMixin) to work
         duration: const Duration(milliseconds: 300),
         lowerBound: 0,
         upperBound: 1);
@@ -57,29 +58,35 @@ class _CategoriesScreenState extends State<CategoriesScreen>
   @override
   Widget build(BuildContext context) {
     return AnimatedBuilder(
-        animation: _animationController,
-        child: GridView(
-          padding: const EdgeInsets.all(24),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 3 / 2,
-              crossAxisSpacing: 20,
-              mainAxisSpacing: 20),
-          children: [
-            // availableCategories.map((category) => CategoryGridItem(category: category))
-            for (final category in availableCategories)
-              CategoryGridItem(
-                  category: category,
-                  onSelectedCategory: () {
-                    _selectedCategory(context, category);
-                  })
-          ],
+      animation: _animationController,
+      child: GridView(
+        padding: const EdgeInsets.all(24),
+        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 3 / 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20),
+        children: [
+          // availableCategories.map((category) => CategoryGridItem(category: category))
+          for (final category in availableCategories)
+            CategoryGridItem(
+                category: category,
+                onSelectedCategory: () {
+                  _selectedCategory(context, category);
+                })
+        ],
+      ),
+      builder: (context, child) => SlideTransition(
+        position: Tween(
+          begin: const Offset(0, 0.3),
+          end: const Offset(0, 0),
+        ).animate(
+          CurvedAnimation(
+              parent: _animationController, curve: Curves.easeInOut),
+          //Tween defines range of values animation interpolates
         ),
-        builder: (context, child) => SlideTransition(
-              position: _animationController.drive(
-                Tween(begin: const Offset(0, 0.3), end: const Offset(0, 0)),
-              ),
-              child: child,
-            ));
+        child: child,
+      ),
+    );
   }
 }
