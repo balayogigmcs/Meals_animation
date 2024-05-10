@@ -36,7 +36,8 @@ class MealDetailScreen extends ConsumerWidget {
                 duration: const Duration(milliseconds: 300),
                 transitionBuilder: (child, animation) {
                   return RotationTransition(
-                    turns: animation,
+                    turns: Tween<double>(begin: 0.8,end :1).animate(animation),
+                    //Tween(begin: 0.8,end :1.0).animate(animation) == Tween<double>(begin: 0.8,end :1).animate(animation)
                     child: child,
                   );
                 },
